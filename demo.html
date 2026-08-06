@@ -80,10 +80,11 @@
 </dialog>
 
 <script>
-const BASES = ['Black tea', 'Green tea', 'Oolong tea'];
-const TOPPINGS = ['Tapioca pearls', 'Grass jelly', 'Pudding', 'Red bean'];
-const SWEETNESS = ['No sugar', 'Half sugar', 'Full sugar'];
-const ICE = ['No ice', 'Less ice', 'Regular ice'];
+const BASES = ['Black tea', 'Green tea', 'Milk tea', 'Oolong tea', 'Matcha', 'Jasmine tea'];
+const TOPPINGS = ['Boba', 'Coconut jelly', 'Pudding', 'Taro balls', 'Red bean', 'Grass jelly'];
+const SWEETNESS = ['Full sugar', 'Half sugar', 'Light sugar', 'No sugar'];
+const ICE = ['Regular ice', 'Less ice', 'No ice'];
+const SIZE = ['Medium', 'Large'];
 
 const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
 const pick = (a) => a[Math.floor(Math.random() * a.length)];
@@ -91,8 +92,8 @@ const pick = (a) => a[Math.floor(Math.random() * a.length)];
 const game = { score: 0, served: 0, combo: 0, best: 0, order: null, choice: null, timer: null, left: 0 };
 
 function newOrder() {
-  game.order = { base: pick(BASES), topping: pick(TOPPINGS), sweet: pick(SWEETNESS), ice: pick(ICE) };
-  game.choice = { base: null, topping: null, sweet: null, ice: null };
+  game.order = { base: pick(BASES), topping: pick(TOPPINGS), sweet: pick(SWEETNESS), ice: pick(ICE), size: pick(SIZE) };
+  game.choice = { base: null, topping: null, sweet: null, ice: null, size: null };
   game.left = 100;
   renderGame();
   clearInterval(game.timer);
@@ -107,9 +108,9 @@ function newOrder() {
 function serve(timedOut) {
   clearInterval(game.timer);
   const o = game.order, c = game.choice;
-  const keys = ['base', 'topping', 'sweet', 'ice'];
+  const keys = ['base', 'topping', 'sweet', 'ice', 'size'];
   const correct = keys.filter(k => o[k] === c[k]).length;
-  const perfect = !timedOut && correct === 4;
+  const perfect = !timedOut && correct === 5;
   game.served++;
   if (perfect) {
     game.combo++;
@@ -143,18 +144,20 @@ function renderGame(outcome) {
         <div class="ticket">
           <h3>Customer order</h3>
           <ul>
-            <li>Base — <strong>${esc(o.base)}</strong></li>
+            <li>Tea base — <strong>${esc(o.base)}</strong></li>
             <li>Topping — <strong>${esc(o.topping)}</strong></li>
-            <li>Sweetness — <strong>${esc(o.sweet)}</strong></li>
-            <li>Ice — <strong>${esc(o.ice)}</strong></li>
+            <li>Sugar level — <strong>${esc(o.sweet)}</strong></li>
+            <li>Ice level — <strong>${esc(o.ice)}</strong></li>
+            <li>Cup size — <strong>${esc(o.size)}</strong></li>
           </ul>
           <div class="timer"><i id="bar" style="width:${Math.max(0, game.left)}%"></i></div>
         </div>
 
         ${group('Tea base', BASES, 'base')}
         ${group('Topping', TOPPINGS, 'topping')}
-        ${group('Sweetness', SWEETNESS, 'sweet')}
-        ${group('Ice', ICE, 'ice')}
+        ${group('Sugar level', SWEETNESS, 'sweet')}
+        ${group('Ice level', ICE, 'ice')}
+        ${group('Cup size', SIZE, 'size')}
 
         <div class="actions">
           <button class="btn" id="serve">Serve drink</button>
@@ -164,10 +167,10 @@ function renderGame(outcome) {
 
         ${outcome ? `<div class="result ${outcome.perfect ? 'good' : 'bad'}">
           ${outcome.timedOut
-            ? `Time ran out — the customer left. ${outcome.correct} of 4 lines were already correct, so partial credit applied and the combo reset.`
+            ? `Time ran out — the customer left. ${outcome.correct} of 5 attributes were already correct, so partial credit applied and the combo reset.`
             : outcome.perfect
               ? `Perfect drink. Combo is now ${game.combo}×, and the remaining time added a speed bonus.`
-              : `${outcome.correct} of 4 lines matched. Partial credit applied and the combo reset — the shipped game uses the same rule so accuracy matters more than speed.`}
+              : `${outcome.correct} of 5 attributes matched. Partial credit applied and the combo reset — the shipped game scores orders the same way, by counting correct attributes rather than requiring an exact match.`}
         </div>` : ''}
       </div>
     </section>`;
