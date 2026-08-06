@@ -1,34 +1,251 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Bubble Tea Master Demo</title>
-  <style>
-    body { margin:0; font-family:system-ui,"Microsoft JhengHei",sans-serif; background:#17120f; color:#fff7ed; }
-    main { max-width:1100px; margin:0 auto; padding:28px 18px; }
-    h1 { font-size:32px; margin:0 0 8px; }
-    p { color:#fed7aa; line-height:1.7; }
-      .grid { max-width:460px; margin:20px auto 0; }
-    .shot { background:#241914; border:1px solid #7c2d12; border-radius:12px; padding:10px; }
-    img { width:100%; border-radius:8px; display:block; }
-    .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; margin:20px 0; }
-    .card { background:#241914; border:1px solid #7c2d12; border-radius:12px; padding:16px; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bubble Tea Master - Interactive Showcase</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,"Segoe UI",sans-serif;background:#17120f;color:#fff7ed}
+  main{max-width:1080px;margin:0 auto;padding:28px 18px 70px}
+  .banner{background:#241914;border:1px solid #7c2d12;color:#fed7aa;font-size:12px;padding:9px 13px;border-radius:8px;margin-bottom:18px;line-height:1.55}
+  .eyebrow{color:#fdba74;font-size:12px;font-weight:650;margin:0}
+  h1{font-size:30px;margin:6px 0 0}
+  .lead{color:#e7c9ac;line-height:1.65;font-size:14px;margin:10px 0 0;max-width:66ch}
+  .tabs{display:flex;gap:7px;flex-wrap:wrap;margin-top:20px}
+  .tab{font:inherit;font-size:13px;padding:8px 15px;border:1px solid #7c2d12;background:#241914;color:#fed7aa;border-radius:8px;cursor:pointer}
+  .tab:hover{border-color:#f97316}
+  .tab.active{background:#ea7317;border-color:#ea7317;color:#1a1108;font-weight:700}
+  .card{background:#241914;border:1px solid #7c2d12;border-radius:12px;margin-top:14px;overflow:hidden}
+  .chead{padding:14px 18px;border-bottom:1px solid #52210f;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+  .chead h2{margin:0;font-size:15px}
+  .note{font-size:11.5px;color:#c9a684}
+  .body{padding:18px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px}
+  .feature{background:#2c1e17;border:1px solid #6b2a11;border-radius:10px;padding:15px}
+  .feature h3{margin:0 0 6px;font-size:14px}
+  .feature p{margin:0;color:#e0bf9f;font-size:12.5px;line-height:1.55}
+  .hud{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:16px}
+  .hud div{background:#2c1e17;border:1px solid #6b2a11;border-radius:9px;padding:12px;text-align:center}
+  .hud span{display:block;font-size:11px;color:#c9a684}
+  .hud strong{display:block;font-size:21px;margin-top:5px}
+  .ticket{background:#fdf3e6;color:#3a2415;border-radius:11px;padding:15px 17px;margin-bottom:16px;border:2px dashed #c8a077}
+  .ticket h3{margin:0 0 9px;font-size:15px;letter-spacing:.02em}
+  .ticket ul{margin:0;padding-left:19px;font-size:13.5px;line-height:1.75}
+  .timer{height:9px;background:#3a2415;border-radius:5px;overflow:hidden;margin-top:12px}
+  .timer i{display:block;height:100%;background:linear-gradient(90deg,#f97316,#fbbf24);transition:width .25s linear}
+  .rowlab{font-size:11.5px;color:#c9a684;margin:14px 0 7px;text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+  .opts{display:flex;gap:8px;flex-wrap:wrap}
+  .opt{font:inherit;font-size:13px;padding:9px 14px;border-radius:9px;border:1px solid #6b2a11;background:#2c1e17;color:#fde3c4;cursor:pointer}
+  .opt:hover{border-color:#f97316}
+  .opt.on{background:#ea7317;border-color:#ea7317;color:#1a1108;font-weight:700}
+  .actions{display:flex;gap:9px;margin-top:18px;flex-wrap:wrap}
+  .btn{font:inherit;font-size:13.5px;padding:10px 18px;border-radius:9px;border:1px solid #ea7317;background:#ea7317;color:#1a1108;cursor:pointer;font-weight:700}
+  .btn.ghost{background:#241914;color:#fed7aa;border-color:#7c2d12;font-weight:400}
+  .result{margin-top:16px;border-radius:9px;padding:13px 15px;font-size:13.5px;line-height:1.6}
+  .good{background:#14301f;border:1px solid #1f6b41;color:#86efac}
+  .bad{background:#331516;border:1px solid #7f2a2f;color:#fca5a5}
+  .shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+  .shot{background:#2c1e17;border:1px solid #6b2a11;border-radius:10px;padding:9px;cursor:pointer}
+  .shot img{width:100%;border-radius:7px;display:block}
+  .shot p{margin:8px 2px 2px;font-size:12px;color:#c9a684}
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  th,td{padding:10px 16px;text-align:left;border-bottom:1px solid #52210f}
+  th{background:#1d150f;color:#fdba74;font-size:11.5px;font-weight:600}
+  dialog{border:0;border-radius:12px;padding:0;background:#241914;color:#fff7ed;width:min(560px,94vw);box-shadow:0 20px 60px rgba(0,0,0,.6)}
+  dialog::backdrop{background:rgba(10,6,4,.7)}
+  .d-head{padding:14px 18px;border-bottom:1px solid #52210f;display:flex;justify-content:space-between;align-items:center}
+  .d-head h3{margin:0;font-size:15px}
+  .d-body{padding:16px 18px}
+  .d-body img{width:100%;border-radius:8px;display:block}
+  .x{border:0;background:transparent;color:#c9a684;font-size:20px;cursor:pointer;line-height:1}
+  @media(max-width:700px){h1{font-size:24px}}
+</style>
 </head>
 <body>
-  <main>
-    <p>Portfolio Showcase · Released on the App Store</p>
-    <h1>Bubble Tea Master</h1>
-    <p>A mobile game built with Godot. This public showcase includes an English portfolio preview while the complete source, asset library, signing configuration, and production service settings remain private.</p>
-    <section class="cards">
-      <div class="card"><h3>Core gameplay</h3><p>Take orders, prepare drinks, manage time and customer patience, and complete level objectives.</p></div>
-      <div class="card"><h3>Mobile experience</h3><p>Designed for phone layouts, touch controls, level selection, and result screens.</p></div>
-        <div class="card"><h3>Release experience</h3><p>Includes privacy documentation, localized store assets, advertising integration, and the App Store release workflow.</p></div>
-    </section>
-    <section class="grid">
-      <div class="shot"><img src="screenshots/english-gameplay.png" alt="Bubble tea order gameplay"></div>
-    </section>
-  </main>
+<main>
+  <div class="banner">Interactive offline showcase. The order mini-demo below is a small reimplementation written for this portfolio page, not the shipped Godot build — it illustrates the order-preparation loop without publishing any game source, asset or signing configuration.</div>
+
+  <p class="eyebrow">Portfolio showcase · Released on the App Store</p>
+  <h1>Bubble Tea Master</h1>
+  <p class="lead">A mobile game built with Godot: customers arrive with drink orders, the player prepares them under time pressure, and levels layer on combos, achievements and shop progression. Released with three localizations and a full store submission workflow.</p>
+
+  <div class="tabs" id="tabs"></div>
+  <div id="view"></div>
+</main>
+
+<dialog id="lightbox">
+  <div class="d-head"><h3 id="lb-title">Screenshot</h3><button class="x" id="lb-x" aria-label="Close">&times;</button></div>
+  <div class="d-body"><img id="lb-img" alt=""></div>
+</dialog>
+
+<script>
+const BASES = ['Black tea', 'Green tea', 'Oolong tea'];
+const TOPPINGS = ['Tapioca pearls', 'Grass jelly', 'Pudding', 'Red bean'];
+const SWEETNESS = ['No sugar', 'Half sugar', 'Full sugar'];
+const ICE = ['No ice', 'Less ice', 'Regular ice'];
+
+const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+const pick = (a) => a[Math.floor(Math.random() * a.length)];
+
+const game = { score: 0, served: 0, combo: 0, best: 0, order: null, choice: null, timer: null, left: 0 };
+
+function newOrder() {
+  game.order = { base: pick(BASES), topping: pick(TOPPINGS), sweet: pick(SWEETNESS), ice: pick(ICE) };
+  game.choice = { base: null, topping: null, sweet: null, ice: null };
+  game.left = 100;
+  renderGame();
+  clearInterval(game.timer);
+  game.timer = setInterval(() => {
+    game.left -= 2;
+    const bar = document.getElementById('bar');
+    if (bar) bar.style.width = Math.max(0, game.left) + '%';
+    if (game.left <= 0) { clearInterval(game.timer); serve(true); }
+  }, 240);
+}
+
+function serve(timedOut) {
+  clearInterval(game.timer);
+  const o = game.order, c = game.choice;
+  const keys = ['base', 'topping', 'sweet', 'ice'];
+  const correct = keys.filter(k => o[k] === c[k]).length;
+  const perfect = !timedOut && correct === 4;
+  game.served++;
+  if (perfect) {
+    game.combo++;
+    game.best = Math.max(game.best, game.combo);
+    game.score += 100 + (game.combo - 1) * 25 + Math.max(0, Math.round(game.left / 4));
+  } else {
+    game.combo = 0;
+    game.score += correct * 15;
+  }
+  renderGame({ timedOut, correct, perfect });
+}
+
+function renderGame(outcome) {
+  const o = game.order, c = game.choice;
+  const group = (label, options, key) => `
+    <div class="rowlab">${label}</div>
+    <div class="opts">${options.map(v =>
+      `<button class="opt ${c[key] === v ? 'on' : ''}" data-key="${key}" data-v="${esc(v)}">${esc(v)}</button>`).join('')}</div>`;
+
+  document.getElementById('view').innerHTML = `
+    <section class="card">
+      <div class="chead"><h2>Order Preparation</h2><span class="note">Match every line before the timer runs out</span></div>
+      <div class="body">
+        <div class="hud">
+          <div><span>Score</span><strong>${game.score}</strong></div>
+          <div><span>Served</span><strong>${game.served}</strong></div>
+          <div><span>Combo</span><strong>${game.combo}×</strong></div>
+          <div><span>Best combo</span><strong>${game.best}×</strong></div>
+        </div>
+
+        <div class="ticket">
+          <h3>Customer order</h3>
+          <ul>
+            <li>Base — <strong>${esc(o.base)}</strong></li>
+            <li>Topping — <strong>${esc(o.topping)}</strong></li>
+            <li>Sweetness — <strong>${esc(o.sweet)}</strong></li>
+            <li>Ice — <strong>${esc(o.ice)}</strong></li>
+          </ul>
+          <div class="timer"><i id="bar" style="width:${Math.max(0, game.left)}%"></i></div>
+        </div>
+
+        ${group('Tea base', BASES, 'base')}
+        ${group('Topping', TOPPINGS, 'topping')}
+        ${group('Sweetness', SWEETNESS, 'sweet')}
+        ${group('Ice', ICE, 'ice')}
+
+        <div class="actions">
+          <button class="btn" id="serve">Serve drink</button>
+          <button class="btn ghost" id="next">New customer</button>
+          <button class="btn ghost" id="restart">Reset score</button>
+        </div>
+
+        ${outcome ? `<div class="result ${outcome.perfect ? 'good' : 'bad'}">
+          ${outcome.timedOut
+            ? `Time ran out — the customer left. ${outcome.correct} of 4 lines were already correct, so partial credit applied and the combo reset.`
+            : outcome.perfect
+              ? `Perfect drink. Combo is now ${game.combo}×, and the remaining time added a speed bonus.`
+              : `${outcome.correct} of 4 lines matched. Partial credit applied and the combo reset — the shipped game uses the same rule so accuracy matters more than speed.`}
+        </div>` : ''}
+      </div>
+    </section>`;
+
+  document.querySelectorAll('.opt').forEach(b => b.addEventListener('click', () => {
+    game.choice[b.dataset.key] = b.dataset.v;
+    renderGame(outcome);
+  }));
+  document.getElementById('serve').addEventListener('click', () => serve(false));
+  document.getElementById('next').addEventListener('click', newOrder);
+  document.getElementById('restart').addEventListener('click', () => {
+    game.score = 0; game.served = 0; game.combo = 0; game.best = 0; newOrder();
+  });
+}
+
+const SHOTS = [
+  ['screenshots/menu.png', 'Main menu'],
+  ['screenshots/gameplay-order.png', 'Order preparation'],
+  ['screenshots/gameplay.png', 'Gameplay'],
+  ['screenshots/english-gameplay.png', 'English build'],
+];
+
+const lightbox = document.getElementById('lightbox');
+document.getElementById('lb-x').addEventListener('click', () => lightbox.close());
+
+const VIEWS = {
+  play: { label:'Order Mini-Demo', render: () => newOrder() },
+
+  shots: { label:'Screenshots', render() {
+    document.getElementById('view').innerHTML = `
+      <section class="card">
+        <div class="chead"><h2>App Store Screenshots</h2><span class="note">Select an image to enlarge</span></div>
+        <div class="body"><div class="shots">${SHOTS.map((s, i) =>
+          `<div class="shot" data-i="${i}"><img src="${s[0]}" alt="${esc(s[1])}"><p>${esc(s[1])}</p></div>`).join('')}</div></div>
+      </section>`;
+    document.querySelectorAll('.shot').forEach(el => el.addEventListener('click', () => {
+      const s = SHOTS[Number(el.dataset.i)];
+      document.getElementById('lb-title').textContent = s[1];
+      const img = document.getElementById('lb-img');
+      img.src = s[0]; img.alt = s[1];
+      lightbox.showModal();
+    }));
+  }},
+
+  scope: { label:'Game Scope', render() {
+    document.getElementById('view').innerHTML = `
+      <section class="card">
+        <div class="chead"><h2>What the Game Contains</h2><span class="note">The Godot project itself stays private</span></div>
+        <div class="body">
+          <div class="cards">
+            <div class="feature"><h3>Core gameplay</h3><p>Take orders, prepare drinks, manage time and customer patience, and complete level objectives.</p></div>
+            <div class="feature"><h3>Progression</h3><p>Levels, scoring, combos, achievements, rewards and shop items.</p></div>
+            <div class="feature"><h3>Mobile experience</h3><p>Phone layouts, touch controls, level selection and result screens.</p></div>
+            <div class="feature"><h3>Release workflow</h3><p>Privacy documentation, localized store assets, advertising integration and App Store submission.</p></div>
+          </div>
+        </div>
+        <table>
+          <thead><tr><th>Area</th><th>Detail</th></tr></thead>
+          <tbody>
+            <tr><td>Engine</td><td>Godot, exported for iOS</td></tr>
+            <tr><td>Localization</td><td>English, Traditional Chinese, Japanese</td></tr>
+            <tr><td>Distribution</td><td>Released on the App Store</td></tr>
+            <tr><td>Excluded here</td><td>Complete project source, signing configuration, advertising identifiers, purchase configuration, full-resolution asset library</td></tr>
+          </tbody>
+        </table>
+      </section>`;
+  }},
+};
+
+const tabs = document.getElementById('tabs');
+tabs.innerHTML = Object.keys(VIEWS).map(k => `<button class="tab" data-k="${k}">${esc(VIEWS[k].label)}</button>`).join('');
+function show(k) {
+  if (k !== 'play') clearInterval(game.timer);
+  tabs.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.k === k));
+  VIEWS[k].render();
+}
+tabs.addEventListener('click', e => { const b = e.target.closest('.tab'); if (b) show(b.dataset.k); });
+show('play');
+</script>
 </body>
 </html>

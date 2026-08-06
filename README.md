@@ -1,5 +1,7 @@
 # Bubble Tea Master - App Store Showcase
 
+![Interactive showcase](screenshots/demo-preview.png)
+
 ## Status
 
 Released on the App Store. The complete game project, signing configuration, advertising configuration, and original asset library remain private.
@@ -20,7 +22,7 @@ Released on the App Store. The complete game project, signing configuration, adv
 
 ## Public Showcase
 
-Open `demo.html` to view the English portfolio page and an anonymized English gameplay image.
+Open `demo.html`. It includes a small playable order-preparation mini-demo written for this page — match the customer's ticket before the timer runs out and the scoring, combo and partial-credit rules behave the way the shipped game does — plus the screenshot gallery and a summary of the game's scope. The mini-demo is a reimplementation for the portfolio, not the shipped Godot build.
 
 ## Disclosure Boundary
 
